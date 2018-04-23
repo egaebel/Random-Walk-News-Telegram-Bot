@@ -1,0 +1,10 @@
+/bin/
+/include/
+/lib/
+pip-selfcheck.json
+/share/
+/cache/
+/__pycache__
+WalkNewsBot--access-token.txt
+cache/
+/__pycache__/
