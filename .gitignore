@@ -8,3 +8,6 @@ pip-selfcheck.json
 WalkNewsBot--access-token.txt
 cache/
 /__pycache__/
+src/telegram-bot-project.sublime-project
+src/telegram-bot-project.sublime-workspace
+src/__pycache__/
