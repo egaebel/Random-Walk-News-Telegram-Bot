@@ -31,8 +31,9 @@ class TelegramBot():
                 offset = max(map(lambda x: x["update_id"], updates["result"])) + 1
                 print("%d results obtained!" % len(results))
             for update in results:
-                response_body = action_function(update)
-                self.send_message(response_body)
+                response_bodies = action_function(update)
+                for response_body in response_bodies:
+                    self.send_message(response_body)
             sleep(5)
 
     def get_me(self):
@@ -45,6 +46,7 @@ class TelegramBot():
         return self.make_get_request(self._get_method_endpoint("getUpdates"), body)
 
     def make_get_request(self, base_url, body={}, headers={}):
+        print("\nmake_get_request call:")
         print("Making get request to url: %s" % base_url)
         url_encoded_body = urllib.parse.urlencode(body.copy())
         print("Body: %s" % url_encoded_body)
@@ -59,6 +61,7 @@ class TelegramBot():
         print("Response: %s" % response)
         if response["status"] != "200":
             print("Content: %s" % content.decode("utf-8"))
+        print("\n")
         return json.loads(content.decode("utf-8")) 
 
 
@@ -79,28 +82,14 @@ if __name__ == '__main__':
         text = message["text"]
 
         if text == "/start":
-            return {
+            return [{
                 "chat_id": chat_id,
                 "text": "You sent start, lets get started."
-            }
+            }]
         else:
-            return {
+            return [{
                 "chat_id": chat_id,
                 "text": "You said '%s' I don't know wtf that means..." % text
-            }
+            }]
 
     bot.update_loop(test_action_fn)
-    """
-    response = bot.get_updates()
-    print(response)
-    for update in response["result"]:
-        message = update["message"]
-        # Ignore other bots
-        if message["from"]["is_bot"]:
-            continue
-
-        if message["text"] == "/news":
-            # Run random walk news and send the urls in a message
-            # Then make it pretty :)
-            bot.send_message
-    """
