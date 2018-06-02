@@ -11,3 +11,4 @@ cache/
 src/telegram-bot-project.sublime-project
 src/telegram-bot-project.sublime-workspace
 src/__pycache__/
+NEWS_API_KEY.txt
