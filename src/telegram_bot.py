@@ -4,18 +4,18 @@ import httplib2
 import json
 import urllib.parse
 
-BOT_TOKEN_FILE_NAME = "WalkNewsBot--access-token.txt"
 CACHE_DIR = "cache"
 TELEGRAM_API_BASE_URL = "https://api.telegram.org/bot"
 
 class TelegramBot():
-    def __init__(self):
+    def __init__(self, bot_token_file_path, message_read_delay=5):
         self.http = httplib2.Http(CACHE_DIR, ca_certs="/etc/ssl/certs/ca-certificates.crt")
-        self.bot_token = self._read_bot_token()
+        self.bot_token = self._read_bot_token(bot_token_file_path)
+        self.message_read_delay = message_read_delay
 
-    def _read_bot_token(self):
-        with open(BOT_TOKEN_FILE_NAME, "r") as bot_token_file:
-            bot_token = bot_token_file.read()
+    def _read_bot_token(self, bot_token_file_path):
+        with open(bot_token_file_path, "r") as bot_token_file:
+            bot_token = bot_token_file.read().strip()
         return bot_token
 
     def _get_method_endpoint(self, method_name):
@@ -24,17 +24,20 @@ class TelegramBot():
     def update_loop(self, action_function):
         offset = None
         while True:
-            get_updates_body = {"offset": offset}
-            updates = self.get_updates(body=get_updates_body)
-            results = updates["result"]
-            if len(results) > 0:
-                offset = max(map(lambda x: x["update_id"], updates["result"])) + 1
-                print("%d results obtained!" % len(results))
-            for update in results:
-                response_bodies = action_function(update)
-                for response_body in response_bodies:
-                    self.send_message(response_body)
-            sleep(5)
+            try:
+                get_updates_body = {"offset": offset}
+                updates = self.get_updates(body=get_updates_body)
+                results = updates["result"]
+                if len(results) > 0:
+                    offset = max(map(lambda x: x["update_id"], updates["result"])) + 1
+                    print("%d results obtained!" % len(results))
+                for update in results:
+                    response_bodies = action_function(update)
+                    for response_body in response_bodies:
+                        self.send_message(response_body)    
+            except Exception as e:
+                print("ERROR: Exception caught.\n%s" % str(e))
+            sleep(self.message_read_delay)
 
     def get_me(self):
         return self.make_get_request(self._get_method_endpoint("getMe"))
@@ -61,6 +64,7 @@ class TelegramBot():
         print("Response: %s" % response)
         if response["status"] != "200":
             print("Content: %s" % content.decode("utf-8"))
+
         print("\n")
         return json.loads(content.decode("utf-8")) 
 

@@ -11,9 +11,15 @@ import json
 import re
 import urllib.parse
 
-class RandomWalkNewsBot(TelegramBot):
-    def __init__(self):
-        TelegramBot.__init__(self)
+MESSAGE_READ_DELAY = 2
+
+RANDOM_NEWS_BOT_TOKEN_FILE_NAME = "RandomNewsBot--access-token.txt"
+RNG_NEWS_BOT_TOKEN_FILE_NAME = "RngNewsBot--access-token.txt"
+WALK_NEWS_BOT_TOKEN_FILE_NAME = "WalkNewsBot--access-token.txt"
+
+class RandomNewsBot(TelegramBot):
+    def __init__(self, bot_token_file_path):
+        TelegramBot.__init__(self, bot_token_file_path, MESSAGE_READ_DELAY)
 
 def get_random_article_urls(num_articles):
     get_all_sources = False
@@ -69,6 +75,14 @@ def news_action(update):
             "text": "%s" % random_article_url,
         }
         for random_article_url in get_random_article_urls(num_articles)]
+    elif text.find("/help") == 0:
+        return [{
+            "chat_id": chat_id,
+            "text": "@randomwalknews provides recent news in a totally random fashion. "
+                    "To get started send '/news' for a single news article, or /news N "
+                    "to receive 'N' random news articles. Each news article is sent in "
+                    "a separate message.",
+        }]
     else:
         return [{
             "chat_id": chat_id,
@@ -76,7 +90,7 @@ def news_action(update):
         }]
 
 if __name__ == '__main__':
-    bot = RandomWalkNewsBot()
+    bot = RandomNewsBot(RNG_NEWS_BOT_TOKEN_FILE_NAME)
 
     bot.update_loop(news_action)
 
