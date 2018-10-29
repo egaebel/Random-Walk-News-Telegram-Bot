@@ -6,12 +6,14 @@ from news_api import get_domains
 
 from telegram_bot import TelegramBot
 
+import datetime as dt
 import httplib2
 import json
+import pytz
 import re
 import urllib.parse
 
-MESSAGE_READ_DELAY = 2
+MESSAGE_READ_DELAY = 3
 
 RANDOM_NEWS_BOT_TOKEN_FILE_NAME = "RandomNewsBot--access-token.txt"
 RNG_NEWS_BOT_TOKEN_FILE_NAME = "RngNewsBot--access-token.txt"
@@ -31,7 +33,7 @@ def get_random_article_urls(num_articles):
         'sources': sources,
         'domains': ",".join(get_domains()),
         'language': 'en',
-        'from': '2018-01-05',
+        'from': str(get_now().date()),
         'sortBy': 'publishedAt',
         'pageSize': page_size,
     }
@@ -44,6 +46,9 @@ def get_random_article_urls(num_articles):
     print("\n".join([str(a) for a in random_article_urls]))
 
     return random_article_urls
+
+def get_now():
+    return dt.datetime.now(pytz.timezone(TIMEZONE))
 
 def news_action(update):
     print("\n\nMessage:\n%s" % update)
