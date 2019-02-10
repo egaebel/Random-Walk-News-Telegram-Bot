@@ -17,6 +17,7 @@ MESSAGE_READ_DELAY = 3
 
 RANDOM_NEWS_BOT_TOKEN_FILE_NAME = "RandomNewsBot--access-token.txt"
 RNG_NEWS_BOT_TOKEN_FILE_NAME = "RngNewsBot--access-token.txt"
+TIMEZONE = "America/Los_Angeles"
 WALK_NEWS_BOT_TOKEN_FILE_NAME = "WalkNewsBot--access-token.txt"
 
 class RandomNewsBot(TelegramBot):
