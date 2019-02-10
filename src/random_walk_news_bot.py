@@ -81,6 +81,11 @@ def news_action(update):
             "text": "%s" % random_article_url,
         }
         for random_article_url in get_random_article_urls(num_articles)]
+    elif text.find("/sources") == 0:
+        return [{
+            "chat_id": chat_id,
+            "text": "%s" % "\n".join(sorted(list(get_domains()))),
+        }]
     elif text.find("/help") == 0:
         return [{
             "chat_id": chat_id,
@@ -92,7 +97,7 @@ def news_action(update):
     else:
         return [{
             "chat_id": chat_id,
-            "text": "I only know \"/news\". Do you want news? PLEASE TELL ME YOU WANT NEWS!?",
+            "text": "I only know \"/news\" and \"/sources\". Do you want news? PLEASE TELL ME YOU WANT NEWS!?",
         }]
 
 if __name__ == '__main__':
