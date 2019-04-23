@@ -24,6 +24,9 @@ class RandomNewsBot(TelegramBot):
     def __init__(self, bot_token_file_path):
         TelegramBot.__init__(self, bot_token_file_path, MESSAGE_READ_DELAY)
 
+def get_domains_with_validation(news_api):
+    return set(get_domains()).intersection(set(news_api.get_all_sources_urls()))
+
 def get_random_article_urls(num_articles):
     get_all_sources = False
     page_size = 100
@@ -31,7 +34,6 @@ def get_random_article_urls(num_articles):
 
     sources = None
     everything_body = {
-        'sources': sources,
         'domains': ",".join(get_domains()),
         'language': 'en',
         'from': str(get_now().date()),
