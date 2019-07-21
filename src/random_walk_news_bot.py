@@ -76,6 +76,13 @@ def news_action(update):
         if re.fullmatch("^/news [0-9]+$", text) is not None:
             num_articles = int(text.split()[1])
             print("Set num articles to: %d " % num_articles)
+        random_article_urls_list = list()
+        while len(random_article_urls_list) < num_articles:
+            random_article_urls_list += (
+                list(
+                    filter(lambda x: not ("/sports/" in x or "/sport/" in x), 
+                        get_random_article_urls(num_articles))))
+
         # Run random walk news and send the urls in a message
         # Then make it pretty :)
         return [{
